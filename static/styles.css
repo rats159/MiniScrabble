@@ -1,0 +1,83 @@
+:root {
+   --boardcell-size: 4rem;
+}
+
+body {
+   background-color: #0d0d0d;
+}
+.board {
+   display: grid;
+   grid-template-columns: repeat(9, var(--boardcell-size));
+   grid-template-rows: repeat(9, var(--boardcell-size));
+   width: fit-content;
+   gap: 0.25rem;
+}
+
+.rack {
+   background-color: hsl(34, 33%, 53%);
+   padding: 0.5rem;
+   margin-top: 0.5rem;
+   display: flex;
+   justify-content: space-evenly;
+   width: calc((var(--boardcell-size) * 9) + (0.25rem * 8) - 1rem);
+}
+
+.boardcell,
+.cell {
+   width: var(--boardcell-size);
+   height: var(--boardcell-size);
+   background: hsl(34, 94%, 82%);
+   position: relative;
+
+   &::before {
+      pointer-events: none;
+      font-family: monospace;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      font-size: 1rem;
+      translate: -50% -50%;
+   }
+}
+
+.cell {
+   &::before {
+      content: "A";
+      font-size: 1.5rem;
+   }
+}
+
+.boardcell {
+   &.tw {
+      background-color: rgb(91, 91, 255);
+
+      &::before {
+         content: "3W";
+      }
+   }
+
+   &.dw {
+      background-color: rgb(151, 151, 255);
+      &::before {
+         content: "2W";
+      }
+   }
+
+   &.tl {
+      background-color: rgb(255, 91, 91);
+      &::before {
+         content: "3L";
+      }
+   }
+
+   &.dl {
+      background-color: rgb(255, 155, 155);
+      &::before {
+         content: "2L";
+      }
+   }
+
+   &.start {
+      background-color: hsl(0, 0%, 33%);
+   }
+}
