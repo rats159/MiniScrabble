@@ -1,16 +1,23 @@
 :root {
-   --boardcell-size: 4rem;
+   --cell-count: 9;
+   --cell-padding: 0.25rem;
+   --boardcell-size: 5rem;
+
+   @media screen and (max-width: 768px) {
+      --boardcell-size: calc((100vmin - var(--cell-padding) * 8) / var(--cell-count));
+   }
 }
 
 body {
    background-color: #0d0d0d;
+   margin: 0;
 }
 .board {
    display: grid;
-   grid-template-columns: repeat(9, var(--boardcell-size));
-   grid-template-rows: repeat(9, var(--boardcell-size));
+   grid-template-columns: repeat(var(--cell-count), var(--boardcell-size));
+   grid-template-rows: repeat(var(--cell-count), var(--boardcell-size));
    width: fit-content;
-   gap: 0.25rem;
+   gap: var(--cell-padding);
 }
 
 .rack {
