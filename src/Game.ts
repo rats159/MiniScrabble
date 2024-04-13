@@ -8,7 +8,6 @@ export default class Game {
       encoding: "utf8",
    }).split("\n");
 
-   //TODO: Fix this! I don't know what broke it, but some words arent findable.
    static isValidWord(word: string): boolean {
       //Binary search
       let left = 0;
