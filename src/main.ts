@@ -1,5 +1,4 @@
 import express from "express";
-import { readFileSync } from "fs";
 import Game from "./Game.ts";
 import { UUID } from "crypto";
 import { ParsedQs } from "qs";
