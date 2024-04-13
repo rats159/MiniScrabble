@@ -11,8 +11,13 @@ export default class Game {
    }).split("\n");
 
    public constructor() {
+      //turns out express doesnt like hyphens
       this.id = randomUUID();
       this.bag = Game.makeBag();
+   }
+
+   draw() {
+      return this.bag.splice(Math.floor(Math.random() * this.bag.length), 1)[0];
    }
 
    bagSize() {

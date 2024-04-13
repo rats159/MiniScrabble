@@ -6,4 +6,8 @@ export class Tile {
       this.letter = letter;
       this.score = score;
    }
+
+   serialize(): string {
+      return `{letter:${this.letter},score:${this.score}}`;
+   }
 }
