@@ -11,7 +11,6 @@ export default class Game {
    }).split("\n");
 
    public constructor() {
-      //turns out express doesnt like hyphens
       this.id = randomUUID();
       this.bag = Game.makeBag();
    }
