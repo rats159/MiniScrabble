@@ -4,13 +4,15 @@
    --boardcell-size: 5rem;
 
    @media screen and (max-width: 768px) {
-      --boardcell-size: calc((100vmin - var(--cell-padding) * 8) / var(--cell-count));
+      --boardcell-size: calc((100vmin - var(--cell-padding) * 8 - 2rem) / var(--cell-count));
    }
 }
 
 body {
+   display: grid;
+   place-items: center;
    background-color: #0d0d0d;
-   margin: 0;
+   margin: 1rem;
 }
 .board {
    display: grid;
@@ -31,12 +33,13 @@ body {
 
 .boardcell,
 .cell {
+   border-radius: 0.25rem;
    width: var(--boardcell-size);
    height: var(--boardcell-size);
-   background: hsl(34, 94%, 82%);
    position: relative;
 
    &::before {
+      font-weight: 900;
       pointer-events: none;
       font-family: monospace;
       position: absolute;
@@ -52,9 +55,11 @@ body {
       content: "A";
       font-size: 1.5rem;
    }
+   background: hsl(51, 100%, 66%);
 }
 
 .boardcell {
+   background: hsl(34, 94%, 82%);
    &.tw {
       background-color: rgb(91, 91, 255);
 
