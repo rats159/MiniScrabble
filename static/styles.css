@@ -13,13 +13,19 @@ body {
    place-items: center;
    background-color: #0d0d0d;
    margin: 1rem;
+   position: relative;
 }
-.board {
+.board,
+#playedtiles {
    display: grid;
    grid-template-columns: repeat(var(--cell-count), var(--boardcell-size));
    grid-template-rows: repeat(var(--cell-count), var(--boardcell-size));
-   width: fit-content;
    gap: var(--cell-padding);
+}
+
+#playedtiles {
+   top: 0;
+   position: absolute;
 }
 
 .rack {
@@ -51,11 +57,30 @@ body {
 }
 
 .cell {
+   top: 0px;
+   left: 0px;
    &::before {
       content: "A";
       font-size: 1.5rem;
    }
-   background: hsl(51, 100%, 66%);
+   background: hsl(56, 100%, 39%);
+
+   &.dragging {
+      position: absolute;
+   }
+
+   &.played {
+      animation: shrink 100ms forwards ease-out;
+   }
+}
+
+@keyframes shrink {
+   from {
+      scale: 1;
+   }
+   to {
+      scale: 0.9;
+   }
 }
 
 .boardcell {
