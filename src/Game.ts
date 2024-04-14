@@ -19,6 +19,12 @@ export default class Game {
       return this.bag.splice(Math.floor(Math.random() * this.bag.length), 1)[0];
    }
 
+   drawMany(amount: number) {
+      return Array(amount)
+         .fill({})
+         .map((_) => this.bag.splice(Math.floor(Math.random() * this.bag.length), 1)[0]);
+   }
+
    bagSize() {
       return this.bag.length;
    }

@@ -11,6 +11,7 @@ const wss = new ws.WebSocketServer({ server });
 type GameMessage = (
    | {
         type: "draw";
+        amount: number;
      }
    | {
         type: "end";
@@ -33,11 +34,16 @@ wss.on("connection", (socket) => {
                   return;
                }
 
-               const tile = game.draw();
+               //user tried to draw more tiles than in bag
+               const overdraw = game.bagSize() < message.amount;
+               const count = overdraw ? game.bagSize() : message.amount;
+
+               const tiles = game.drawMany(count);
+
                socket.send(
                   JSON.stringify({
                      type: "bagdraw",
-                     data: { count: 1, tiles: [tile], remaining: game.bagSize() },
+                     data: { count, tiles, remaining: game.bagSize(), overdraw },
                   })
                );
             } catch (error) {
