@@ -18,7 +18,7 @@ function overlaps(rect1, rect2) {
  * @param {HTMLDivElement} tile
  */
 
-function setuptile(tile) {
+function setupTile(tile) {
    tile.onpointerdown = (event) => {
       let x = event.clientX;
       let y = event.clientY;
@@ -79,13 +79,14 @@ function setuptile(tile) {
    };
 }
 
-document.querySelectorAll(".tile").forEach((tile) => setuptile(tile));
+document.querySelectorAll(".tile").forEach((tile) => setupTile(tile));
 const board = document.querySelector(".board");
 const rack = document.querySelector(".rack");
 const tileBoard = document.querySelector("#playedtiles");
 
 let gameId = "";
 let socket = new WebSocket("ws://localhost:8080");
+
 async function startGame() {
    gameId = JSON.parse(await fetch("api/newgame", { method: "POST" }).then((data) => data.json())).id;
    socket.addEventListener("message", (response) => {
@@ -99,10 +100,12 @@ async function startGame() {
             }
       }
    });
+
+   socket.send(JSON.stringify({ type: "draw", gameid: gameId, amount: 5 }));
 }
 
 function draw() {
-   socket.send(JSON.stringify({ type: "draw", gameid: gameId }));
+   socket.send(JSON.stringify({ type: "draw", gameid: gameId, amount: 1 }));
 }
 
 function makeTile(letter, score) {
@@ -110,5 +113,6 @@ function makeTile(letter, score) {
    tile.setAttribute("data-letter", letter);
    tile.setAttribute("data-score", score);
    tile.classList.add("tile");
+   setupTile(tile);
    return tile;
 }
