@@ -100,9 +100,6 @@ app.post("/api/endgame", (req, res) => {
    }
 });
 
-//Be sure to keep this declared last, as to not mark all other api endpoints as `:gameid` ones
-app.post("/api/:gameid/draw", (req, res) => {});
-
 let Games: Map<UUID, Game> = new Map();
 
 console.log("Starting server!");
