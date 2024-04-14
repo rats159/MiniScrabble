@@ -53,13 +53,17 @@ function setupTile(tile) {
             tile.classList.add("played");
          } else if (overlaps(tileBounds, rackBounds)) {
             //Reorder rack
+            let placed = false;
             for (const rackTile of document.querySelectorAll(".tile:not(.dragging)")) {
                if (rackTile.getBoundingClientRect().left > tileBounds.left) {
                   rackTile.insertAdjacentElement("beforebegin", tile);
+                  placed = true;
                   break;
                }
             }
-            rack.appendChild(tile);
+            if (!placed) {
+               rack.appendChild(tile);
+            }
          } else {
             rack.appendChild(tile);
          }
