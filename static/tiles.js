@@ -53,16 +53,18 @@ function setupTile(tile) {
 
       if (overlaps(tileBounds, boardBounds)) {
          playOnBoard(tile, tileBounds, boardBounds);
+         console.log("drop on board!");
       } else if (overlaps(tileBounds, rackBounds)) {
          reorderRack(tile, tileBounds);
+         console.log("drop on rack!");
       } else {
          rack.appendChild(tile);
       }
 
       //Reset dragging styles
-      tile.classList.remove("dragging");
       tile.style.top = "0px";
       tile.style.left = "0px";
+      tile.classList.remove("dragging");
    }
 }
 
@@ -103,7 +105,7 @@ function playOnBoard(tile, tileBounds, boardBounds) {
 
 function reorderRack(tile, tileBounds) {
    let placed = false;
-   for (const rackTile of document.querySelectorAll(".tile:not(.dragging)")) {
+   for (const rackTile of document.querySelectorAll(".tile:not(.dragging):not(.played)")) {
       if (rackTile.getBoundingClientRect().left > tileBounds.left) {
          rackTile.insertAdjacentElement("beforebegin", tile);
          placed = true;
