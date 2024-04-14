@@ -84,10 +84,16 @@ function isOpen(rowIndex, colIndex) {
  * @param {DOMRect} boardBounds
  */
 function playOnBoard(tile, tileBounds, boardBounds) {
-   const tile_COUNT = 9;
-   const boardTileSize = boardBounds.width / tile_COUNT;
-   const rowIndex = Math.min(Math.max(Math.round((tileBounds.top - boardBounds.top) / boardTileSize), 0), 8);
-   const colIndex = Math.min(Math.max(Math.round((tileBounds.left - boardBounds.left) / boardTileSize), 0), 8);
+   const TILE_COUNT = 9;
+   const boardTileSize = boardBounds.width / TILE_COUNT;
+   const rowIndex = Math.min(
+      Math.max(Math.round((tileBounds.top - boardBounds.top) / boardTileSize), 0),
+      TILE_COUNT - 1
+   );
+   const colIndex = Math.min(
+      Math.max(Math.round((tileBounds.left - boardBounds.left) / boardTileSize), 0),
+      TILE_COUNT - 1
+   );
 
    if (!isOpen(rowIndex, colIndex)) {
       rack.appendChild(tile);
@@ -131,13 +137,17 @@ function boardToTileArray() {
    return tileArray;
 }
 
-function getBoardWords() {
+function validateBoard() {
    const board = boardToTileArray();
 
    const verticalWords = [];
    const horizontalWords = [];
 
    const workingHorizontalWords = [];
+
+   let firstX = null;
+   let firstY = null;
+
    for (let x = 0; x < board.length; x++) {
       let currentVWord = "";
 
@@ -161,12 +171,45 @@ function getBoardWords() {
          }
 
          if (currentLetter != "-") {
+            firstX ??= x;
+            firstY ??= y;
             workingHorizontalWords[y] ??= "";
             workingHorizontalWords[y] += currentLetter;
             currentVWord += currentLetter;
          }
       }
    }
+   //Flood Fill to check for contiguousness
+   const contiguousCount = (function fill(board, visited, [x, y]) {
+      if (x < 0 || x >= board.length || y < 0 || y >= board[0].length) {
+         return 0;
+      }
 
-   return [verticalWords, horizontalWords];
+      for (const [pX, pY] of visited) {
+         if (x == pX && y == pY) {
+            return 0;
+         }
+      }
+      visited.push([x, y]);
+
+      if (board[x][y] != "-") {
+         return (
+            1 +
+            fill(board, visited, [x + 1, y]) +
+            fill(board, visited, [x - 1, y]) +
+            fill(board, visited, [x, y + 1]) +
+            fill(board, visited, [x, y - 1])
+         );
+      } else {
+         return 0;
+      }
+   })(board, [], [firstX, firstY]);
+
+   let contiguous = false;
+
+   if (contiguousCount == board.flat().filter((c) => c != "-").length) {
+      contiguous = true;
+   }
+
+   return { contiguous, words: { verticalWords, horizontalWords } };
 }
