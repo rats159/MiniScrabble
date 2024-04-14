@@ -69,7 +69,7 @@ app.post("/api/newgame", (req, res) => {
    const game = new Game();
    Games.set(game.id, game);
    console.log(`Making game! ID: ${game.id}`);
-   res.json(JSON.stringify({ id: game.id })).status(200);
+   res.json({ id: game.id }).status(200);
 });
 
 app.post("/api/endgame", (req, res) => {

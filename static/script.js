@@ -12,7 +12,7 @@ async function validateWord(word) {
 }
 
 async function createNewGame() {
-   gameId = JSON.parse(await fetch("api/newgame", { method: "POST" }).then((data) => data.json())).id;
+   gameId = (await fetch("api/newgame", { method: "POST" }).then((data) => data.json())).id;
    socket.addEventListener("message", (response) => {
       const data = JSON.parse(response.data);
 
