@@ -137,7 +137,7 @@ function boardToTileArray() {
    return tileArray;
 }
 
-function validateBoard() {
+async function validateBoard() {
    const board = boardToTileArray();
 
    const verticalWords = [];
@@ -180,7 +180,7 @@ function validateBoard() {
       }
    }
 
-   const words = batchValidate(horizontalWords.concat(verticalWords));
+   const words = await batchValidateWords(horizontalWords.concat(verticalWords));
 
    //Flood Fill to check for contiguousness
    const contiguousCount = (function fill(board, visited, [x, y]) {
@@ -214,5 +214,5 @@ function validateBoard() {
       contiguous = true;
    }
 
-   return { contiguous, words: { verticalWords, horizontalWords } };
+   return { contiguous, words };
 }
