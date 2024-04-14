@@ -36,14 +36,14 @@ export default class Game {
 
       while (left != right) {
          let idx = Math.ceil((left + right) / 2);
-         if (Game.words[idx] > word) {
+         if (Game.words[idx] > word.toLowerCase()) {
             right = idx - 1;
          } else {
             left = idx;
          }
       }
 
-      return Game.words[left] == word;
+      return Game.words[left] == word.toLowerCase();
    }
 
    static makeBag() {
