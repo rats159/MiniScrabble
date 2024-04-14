@@ -59,6 +59,7 @@ function setupCell(cell) {
                   break;
                }
             }
+            rack.appendChild(cell);
          } else {
             rack.appendChild(cell);
          }
