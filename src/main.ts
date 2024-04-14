@@ -47,11 +47,7 @@ wss.on("connection", (socket) => {
                   })
                );
             } catch (error) {
-               if (!(error instanceof Error)) {
-                  throw error;
-               }
-
-               socket.send(JSON.stringify({ type: "error", data: error.message }));
+               socket.send(JSON.stringify({ type: "error", data: error!.message }));
             }
          }
          case "end":
@@ -92,11 +88,7 @@ app.post("/api/endgame", (req, res) => {
       }
       res.status(400).json("No such game with specified ID");
    } catch (error) {
-      if (!(error instanceof Error)) {
-         throw error;
-      }
-
-      res.status(400).json(error.message);
+      res.status(400).json(error!.message);
    }
 });
 
