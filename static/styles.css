@@ -13,8 +13,8 @@ body {
    place-items: center;
    background-color: #0d0d0d;
    margin: 1rem;
-   position: relative;
 }
+
 .board,
 #playedtiles {
    display: grid;
@@ -24,7 +24,7 @@ body {
 }
 
 #playedtiles {
-   top: 0;
+   top: 1rem;
    position: absolute;
 }
 
