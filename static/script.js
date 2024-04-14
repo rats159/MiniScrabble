@@ -47,10 +47,18 @@ function setupTile(tile) {
             const rowIndex = Math.min(Math.max(Math.round((tileBounds.top - boardBounds.top) / boardTileSize), 0), 8);
             const colIndex = Math.min(Math.max(Math.round((tileBounds.left - boardBounds.left) / boardTileSize), 0), 8);
 
-            tile.style.gridRow = rowIndex + 1;
-            tile.style.gridColumn = colIndex + 1;
-            tileBoard.appendChild(tile);
-            tile.classList.add("played");
+            if (!isOpen(rowIndex, colIndex)) {
+               rack.appendChild(tile);
+               tile.classList.add("invalid");
+               setTimeout(() => {
+                  tile.classList.remove("invalid");
+               }, 2000);
+            } else {
+               tile.style.gridRow = rowIndex + 1;
+               tile.style.gridColumn = colIndex + 1;
+               tileBoard.appendChild(tile);
+               tile.classList.add("played");
+            }
          } else if (overlaps(tileBounds, rackBounds)) {
             //Reorder rack
             let placed = false;
@@ -90,6 +98,15 @@ const tileBoard = document.querySelector("#playedtiles");
 
 let gameId = "";
 let socket = new WebSocket("ws://localhost:8080");
+
+function isOpen(rowIndex, colIndex) {
+   for (const child of tileBoard.children) {
+      if (child.style.gridRow - 1 == rowIndex && child.style.gridColumn - 1 == colIndex) {
+         return false;
+      }
+   }
+   return true;
+}
 
 async function startGame() {
    gameId = JSON.parse(await fetch("api/newgame", { method: "POST" }).then((data) => data.json())).id;

@@ -83,6 +83,19 @@ body {
    &.played {
       animation: shrink 100ms forwards ease-out;
    }
+
+   &.invalid {
+      animation: invalid-tile 1s forwards linear;
+   }
+}
+
+@keyframes invalid-tile {
+   from {
+      background: red;
+   }
+   to {
+      background: hsl(56, 100%, 39%);
+   }
 }
 
 @keyframes dragging {
