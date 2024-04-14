@@ -179,6 +179,9 @@ function validateBoard() {
          }
       }
    }
+
+   const words = batchValidate(horizontalWords.concat(verticalWords));
+
    //Flood Fill to check for contiguousness
    const contiguousCount = (function fill(board, visited, [x, y]) {
       if (x < 0 || x >= board.length || y < 0 || y >= board[0].length) {

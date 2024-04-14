@@ -65,6 +65,15 @@ app.get("/api/verify", (req, res) => {
    res.json(Game.isValidWord(req.query.word as string));
 });
 
+app.get("/api/batchVerify", (req, res) => {
+   const words = (req.query["words"] as string).split(",");
+   let matches: { word: string; match: boolean }[] = [];
+   for (const word of words) {
+      matches.push({ word, match: Game.isValidWord(word) });
+   }
+   res.json(matches);
+});
+
 app.post("/api/newgame", (req, res) => {
    const game = new Game();
    Games.set(game.id, game);
