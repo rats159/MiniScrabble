@@ -1,8 +1,57 @@
 import express from "express";
 import Game from "./Game.ts";
 import { UUID } from "crypto";
-import { ParsedQs } from "qs";
+import * as ws from "ws";
+import * as http from "http";
 const app = express();
+const server = http.createServer(app);
+
+const wss = new ws.WebSocketServer({ server });
+
+type GameMessage = (
+   | {
+        type: "draw";
+     }
+   | {
+        type: "end";
+     }
+) & {
+   gameid: string;
+};
+
+wss.on("connection", (socket) => {
+   socket.on("message", (data) => {
+      const message = JSON.parse(data.toString()) as GameMessage;
+      switch (message.type) {
+         case "draw": {
+            try {
+               const gameID = paramToUUID(message.gameid);
+               const game = Games.get(gameID);
+
+               if (game.bagSize() == 0) {
+                  socket.send(JSON.stringify({ type: "error", data: "Bag is empty." }));
+                  return;
+               }
+
+               const tile = game.draw();
+               socket.send(
+                  JSON.stringify({
+                     type: "bagdraw",
+                     data: { count: 1, tiles: [tile], remaining: game.bagSize() },
+                  })
+               );
+            } catch (error) {
+               if (!(error instanceof Error)) {
+                  throw error;
+               }
+
+               socket.send(JSON.stringify({ type: "error", data: error.message }));
+            }
+         }
+         case "end":
+      }
+   });
+});
 
 app.use(express.static("static"));
 
@@ -37,31 +86,12 @@ app.post("/api/endgame", (req, res) => {
 });
 
 //Be sure to keep this declared last, as to not mark all other api endpoints as `:gameid` ones
-app.post("/api/:gameid/draw", (req, res) => {
-   try {
-      const gameID = paramToUUID(req.params.gameid);
-      const game = Games.get(gameID);
-
-      if (game.bagSize() == 0) {
-         res.status(409).json("Bag is empty.");
-         return;
-      }
-
-      const tile = game.draw();
-      res.status(200).json(tile.serialize());
-   } catch (error) {
-      if (!(error instanceof Error)) {
-         throw error;
-      }
-
-      res.status(400).json(error.message);
-   }
-});
+app.post("/api/:gameid/draw", (req, res) => {});
 
 let Games: Map<UUID, Game> = new Map();
 
 console.log("Starting server!");
-app.listen(8080);
+server.listen(8080);
 
 function paramToUUID(id: any) {
    const UUIDRegex = /[0-9a-f]{8}\-[0-9a-f]{4}\-[0-9a-f]{4}\-[0-9a-f]{4}\-[0-9a-f]{12}/;

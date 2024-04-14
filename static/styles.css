@@ -38,7 +38,7 @@ body {
 }
 
 .boardcell,
-.cell {
+.tile {
    border-radius: 0.25rem;
    width: var(--boardcell-size);
    height: var(--boardcell-size);
@@ -56,12 +56,22 @@ body {
    }
 }
 
-.cell {
+.tile {
    top: 0px;
    left: 0px;
    &::before {
-      content: "A";
+      content: attr(data-letter);
       font-size: 1.5rem;
+   }
+
+   &::after {
+      content: attr(data-score);
+      pointer-events: none;
+      position: absolute;
+      top: 0;
+      right: 0.25em;
+      font-family: monospace;
+      font-size: 1.25rem;
    }
    background: hsl(56, 100%, 39%);
 

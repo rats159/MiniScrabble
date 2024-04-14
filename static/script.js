@@ -15,57 +15,57 @@ function overlaps(rect1, rect2) {
 }
 
 /**
- * @param {HTMLDivElement} cell
+ * @param {HTMLDivElement} tile
  */
 
-function setupCell(cell) {
-   cell.onpointerdown = (event) => {
+function setuptile(tile) {
+   tile.onpointerdown = (event) => {
       let x = event.clientX;
       let y = event.clientY;
 
       event.preventDefault();
 
-      cell.classList.add("dragging");
-      cell.classList.remove("played");
+      tile.classList.add("dragging");
+      tile.classList.remove("played");
 
-      cell.style.top = y - cell.clientHeight / 2 + "px";
-      cell.style.left = x - cell.clientWidth / 2 + "px";
-      cell.style.gridArea = "";
+      tile.style.top = y - tile.clientHeight / 2 + "px";
+      tile.style.left = x - tile.clientWidth / 2 + "px";
+      tile.style.gridArea = "";
 
-      document.body.appendChild(cell);
+      document.body.appendChild(tile);
 
-      cell.onpointerup = () => {
+      tile.onpointerup = () => {
          document.onpointermove = null;
 
-         const cellBounds = cell.getBoundingClientRect();
+         const tileBounds = tile.getBoundingClientRect();
          const boardBounds = board.getBoundingClientRect();
          const rackBounds = rack.getBoundingClientRect();
 
-         if (overlaps(cellBounds, boardBounds)) {
-            const CELL_COUNT = 9;
-            const boardTileSize = boardBounds.width / CELL_COUNT;
-            const rowIndex = Math.min(Math.max(Math.round((cellBounds.top - boardBounds.top) / boardTileSize), 0), 8);
-            const colIndex = Math.min(Math.max(Math.round((cellBounds.left - boardBounds.left) / boardTileSize), 0), 8);
+         if (overlaps(tileBounds, boardBounds)) {
+            const tile_COUNT = 9;
+            const boardTileSize = boardBounds.width / tile_COUNT;
+            const rowIndex = Math.min(Math.max(Math.round((tileBounds.top - boardBounds.top) / boardTileSize), 0), 8);
+            const colIndex = Math.min(Math.max(Math.round((tileBounds.left - boardBounds.left) / boardTileSize), 0), 8);
 
-            cell.style.gridRow = rowIndex + 1;
-            cell.style.gridColumn = colIndex + 1;
-            tileBoard.appendChild(cell);
-            cell.classList.add("played");
-         } else if (overlaps(cellBounds, rackBounds)) {
+            tile.style.gridRow = rowIndex + 1;
+            tile.style.gridColumn = colIndex + 1;
+            tileBoard.appendChild(tile);
+            tile.classList.add("played");
+         } else if (overlaps(tileBounds, rackBounds)) {
             //Reorder rack
-            for (const rackTile of document.querySelectorAll(".cell:not(.dragging)")) {
-               if (rackTile.getBoundingClientRect().left > cellBounds.left) {
-                  rackTile.insertAdjacentElement("beforebegin", cell);
+            for (const rackTile of document.querySelectorAll(".tile:not(.dragging)")) {
+               if (rackTile.getBoundingClientRect().left > tileBounds.left) {
+                  rackTile.insertAdjacentElement("beforebegin", tile);
                   break;
                }
             }
-            rack.appendChild(cell);
+            rack.appendChild(tile);
          } else {
-            rack.appendChild(cell);
+            rack.appendChild(tile);
          }
-         cell.classList.remove("dragging");
-         cell.style.top = "0px";
-         cell.style.left = "0px";
+         tile.classList.remove("dragging");
+         tile.style.top = "0px";
+         tile.style.left = "0px";
       };
 
       document.onpointermove = (event) => {
@@ -73,13 +73,42 @@ function setupCell(cell) {
          x = event.clientX;
          y = event.clientY;
 
-         cell.style.top = y - cell.clientHeight / 2 + "px";
-         cell.style.left = x - cell.clientWidth / 2 + "px";
+         tile.style.top = y - tile.clientHeight / 2 + "px";
+         tile.style.left = x - tile.clientWidth / 2 + "px";
       };
    };
 }
 
-document.querySelectorAll(".cell").forEach((cell) => setupCell(cell));
+document.querySelectorAll(".tile").forEach((tile) => setuptile(tile));
 const board = document.querySelector(".board");
 const rack = document.querySelector(".rack");
 const tileBoard = document.querySelector("#playedtiles");
+
+let gameId = "";
+let socket = new WebSocket("ws://localhost:8080");
+async function startGame() {
+   gameId = JSON.parse(await fetch("api/newgame", { method: "POST" }).then((data) => data.json())).id;
+   socket.addEventListener("message", (response) => {
+      const data = JSON.parse(response.data);
+
+      console.log(data);
+      switch (data.type) {
+         case "bagdraw":
+            for (const tile of data.data.tiles) {
+               rack.appendChild(makeTile(tile.letter, tile.score));
+            }
+      }
+   });
+}
+
+function draw() {
+   socket.send(JSON.stringify({ type: "draw", gameid: gameId }));
+}
+
+function makeTile(letter, score) {
+   const tile = document.createElement("div");
+   tile.setAttribute("data-letter", letter);
+   tile.setAttribute("data-score", score);
+   tile.classList.add("tile");
+   return tile;
+}
