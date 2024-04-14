@@ -37,7 +37,7 @@ app.post("/api/endgame", (req, res) => {
 });
 
 //Be sure to keep this declared last, as to not mark all other api endpoints as `:gameid` ones
-app.get("/api/:gameid/draw", (req, res) => {
+app.post("/api/:gameid/draw", (req, res) => {
    try {
       const gameID = paramToUUID(req.params.gameid);
       const game = Games.get(gameID);
@@ -63,7 +63,7 @@ let Games: Map<UUID, Game> = new Map();
 console.log("Starting server!");
 app.listen(8080);
 
-function paramToUUID(id: string | ParsedQs | string[] | ParsedQs[] | undefined) {
+function paramToUUID(id: any) {
    const UUIDRegex = /[0-9a-f]{8}\-[0-9a-f]{4}\-[0-9a-f]{4}\-[0-9a-f]{4}\-[0-9a-f]{12}/;
    if (id == undefined) {
       throw new Error("ID is a required argument.");
