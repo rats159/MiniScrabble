@@ -75,6 +75,12 @@ function isOpen(rowIndex, colIndex) {
    return true;
 }
 
+/**
+ *
+ * @param {HTMLDivElement} tile
+ * @param {DOMRect} tileBounds
+ * @param {DOMRect} boardBounds
+ */
 function playOnBoard(tile, tileBounds, boardBounds) {
    const tile_COUNT = 9;
    const boardTileSize = boardBounds.width / tile_COUNT;
@@ -107,4 +113,58 @@ function reorderRack(tile, tileBounds) {
    if (!placed) {
       rack.appendChild(tile);
    }
+}
+
+/**
+ *
+ * @returns {string[][]}
+ */
+function boardToTileArray() {
+   const tileArray = new Array(9).fill().map((_) => new Array(9).fill("-"));
+   for (const child of tileBoard.children) {
+      const x = child.style.gridColumn - 1;
+      const y = child.style.gridRow - 1;
+      tileArray[x][y] = child.dataset["letter"];
+   }
+   return tileArray;
+}
+
+function getBoardWords() {
+   const board = boardToTileArray();
+
+   const verticalWords = [];
+   const horizontalWords = [];
+
+   const workingHorizontalWords = [];
+   for (let x = 0; x < board.length; x++) {
+      let currentVWord = "";
+
+      for (let y = 0; y < board[0].length; y++) {
+         const currentLetter = board[x][y];
+
+         if (currentLetter == "-") {
+            if (currentVWord != "") {
+               if (currentVWord.length > 1) {
+                  verticalWords.push(currentVWord);
+               }
+               currentVWord = "";
+            }
+
+            if (workingHorizontalWords[y] != "") {
+               if (workingHorizontalWords[y]?.length > 1) {
+                  horizontalWords.push(workingHorizontalWords[y]);
+               }
+               workingHorizontalWords[y] = "";
+            }
+         }
+
+         if (currentLetter != "-") {
+            workingHorizontalWords[y] ??= "";
+            workingHorizontalWords[y] += currentLetter;
+            currentVWord += currentLetter;
+         }
+      }
+   }
+
+   return [verticalWords, horizontalWords];
 }
