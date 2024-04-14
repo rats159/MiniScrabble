@@ -61,11 +61,11 @@ wss.on("connection", (socket) => {
 
 app.use(express.static("static"));
 
-app.get("/api/verify", (req, res) => {
+app.get("/api/validate", (req, res) => {
    res.json(Game.isValidWord(req.query.word as string));
 });
 
-app.get("/api/batchVerify", (req, res) => {
+app.get("/api/batchValidate", (req, res) => {
    const words = (req.query["words"] as string).split(",");
    let matches: { word: string; match: boolean }[] = [];
    for (const word of words) {

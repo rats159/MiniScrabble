@@ -8,11 +8,11 @@ let gameId = "";
 let socket = new WebSocket("ws://localhost:8080");
 
 async function validateWord(word) {
-   return await fetch(`/api/verify?word=${word}`).then((data) => data.json());
+   return await fetch(`/api/validate?word=${word}`).then((data) => data.json());
 }
 
 async function batchValidateWords(words) {
-   return await fetch(`/api/batchVerify?words=${words}`).then((data) => data.json());
+   return await fetch(`/api/batchValidate?words=${words}`).then((data) => data.json());
 }
 
 async function createNewGame() {
