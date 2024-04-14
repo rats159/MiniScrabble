@@ -77,10 +77,21 @@ body {
 
    &.dragging {
       position: absolute;
+      animation: dragging 2s infinite ease-in-out;
    }
 
    &.played {
       animation: shrink 100ms forwards ease-out;
+   }
+}
+
+@keyframes dragging {
+   0%,
+   100% {
+      rotate: -10deg;
+   }
+   50% {
+      rotate: 10deg;
    }
 }
 
