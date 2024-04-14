@@ -67,9 +67,9 @@ app.get("/api/validate", (req, res) => {
 
 app.get("/api/batchValidate", (req, res) => {
    const words = (req.query["words"] as string).split(",");
-   let matches: { word: string; match: boolean }[] = [];
+   let matches: { word: string; valid: boolean }[] = [];
    for (const word of words) {
-      matches.push({ word, match: Game.isValidWord(word) });
+      matches.push({ word, valid: Game.isValidWord(word) });
    }
    res.json(matches);
 });
