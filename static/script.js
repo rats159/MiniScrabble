@@ -5,7 +5,15 @@ const rack = document.querySelector(".rack");
 const tileBoard = document.querySelector("#playedtiles");
 
 let gameId = "";
-let socket = new WebSocket("ws://localhost:8080");
+// let socket = new WebSocket("ws://localhost:8080");
+
+const socket = io();
+
+socket.on("draw", ({ tiles }) => {
+   for (const tile of tiles) {
+      rack.appendChild(makeTileHTML(tile.letter, tile.score));
+   }
+});
 
 async function validateWord(word) {
    return await fetch(`/api/validate?word=${word}`).then((data) => data.json());
@@ -17,23 +25,12 @@ async function batchValidateWords(words) {
 
 async function createNewGame() {
    gameId = (await fetch("api/newgame", { method: "POST" }).then((data) => data.json())).id;
-   socket.addEventListener("message", (response) => {
-      const data = JSON.parse(response.data);
 
-      console.log(data);
-      switch (data.type) {
-         case "bagdraw":
-            for (const tile of data.data.tiles) {
-               rack.appendChild(makeTileHTML(tile.letter, tile.score));
-            }
-      }
-   });
-
-   socket.send(JSON.stringify({ type: "draw", gameid: gameId, amount: 5 }));
+   socket.emit("draw", { gameid: gameId, amount: 5 });
 }
 
 function drawTile() {
-   socket.send(JSON.stringify({ type: "draw", gameid: gameId, amount: 1 }));
+   socket.emit("draw", { gameid: gameId, amount: 1 });
 }
 
 function makeTileHTML(letter, score) {

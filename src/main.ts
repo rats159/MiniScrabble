@@ -1,12 +1,12 @@
 import express from "express";
 import Game from "./Game.ts";
 import { UUID } from "crypto";
-import * as ws from "ws";
+import * as socketio from "socket.io";
 import * as http from "http";
 const app = express();
 const server = http.createServer(app);
 
-const wss = new ws.WebSocketServer({ server });
+const io = new socketio.Server(server);
 
 type GameMessage = (
    | {
@@ -20,41 +20,27 @@ type GameMessage = (
    gameid: string;
 };
 
-wss.on("connection", (socket) => {
-   socket.on("message", (data) => {
-      const message = JSON.parse(data.toString()) as GameMessage;
-      switch (message.type) {
-         case "draw":
-            {
-               try {
-                  const gameID = paramToUUID(message.gameid);
-                  const game = Games.get(gameID);
+io.on("connection", (socket) => {
+   socket.on("draw", (message) => {
+      console.log(message);
+      try {
+         const gameID = paramToUUID(message.gameid);
+         const game = Games.get(gameID);
 
-                  if (game.bagSize() == 0) {
-                     socket.send(JSON.stringify({ type: "error", data: "Bag is empty." }));
-                     return;
-                  }
+         if (game.bagSize() == 0) {
+            socket.emit("error", "Bag is empty.");
+            return;
+         }
 
-                  //user tried to draw more tiles than in bag
-                  const overdraw = game.bagSize() < message.amount;
-                  const count = overdraw ? game.bagSize() : message.amount;
+         //user tried to draw more tiles than in bag
+         const overdraw = game.bagSize() < message.amount;
+         const count = overdraw ? game.bagSize() : message.amount;
 
-                  const tiles = game.drawMany(count);
+         const tiles = game.drawMany(count);
 
-                  socket.send(
-                     JSON.stringify({
-                        type: "bagdraw",
-                        data: { count, tiles, remaining: game.bagSize(), overdraw },
-                     })
-                  );
-               } catch (error) {
-                  socket.send(JSON.stringify({ type: "error", data: error!.message }));
-               }
-            }
-            break;
-
-         case "end":
-            break;
+         socket.emit("draw", { count, tiles, remaining: game.bagSize(), overdraw });
+      } catch (error) {
+         socket.emit("error", error!.message);
       }
    });
 });
