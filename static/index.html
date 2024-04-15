@@ -98,12 +98,50 @@
     <div id="playedtiles">
 
     </div>
-    <div class="rack">
-    </div>
-    <button class="submit">Submit</button>
-    <button class="submit">Shuffle</button>
-    <button class="submit">Draw</button>
-    <button class="submit">Pass</button>
+
+    <section class="hud">
+      <div class="rackutils">
+        <button class="action shuffle" title="Shuffle your rack.">
+          <svg width="192" height="192" viewBox="0 0 192 192" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="32" cy="32" r="32" />
+            <circle cx="96" cy="96" r="32" />
+            <circle cx="160" cy="32" r="32" />
+            <circle cx="160" cy="160" r="32" />
+            <circle cx="32" cy="160" r="32" />
+          </svg>
+        </button>
+        <button class="action sort" title="Sort your rack.">
+          <svg width="256" height="282" viewBox="0 0 256 282" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="64" height="64" y="0" />
+            <rect width="128" height="64" y="72" />
+            <rect width="192" height="64" y="144" />
+            <rect width="256" height="64" y="216" />
+            <path d="M224.464 4V174M224.464 174L250 147.917M224.464 174L198 147.917" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </button>
+      </div>
+      <div class="rack">
+      </div>
+      <div class="actions">
+        <button class="action submit" title="Play your word.">
+          <svg width="289" height="161" viewBox="0 0 289 161" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M16.5242 80.5242L272.524 80.5242M272.524 80.5242L207.212 16.5242M272.524 80.5242L207.212 144.524" stroke-width="32" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </button>
+        <button class="action exchange" title="Exchange some of your tiles for new ones.">
+          <svg width="382" height="352" viewBox="0 0 382 352" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M276.476 320L276.476 32M276.476 32L203 105.476M276.476 32L349.952 105.476" stroke-width="64" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M105.524 32L105.524 320M105.524 320L179 246.524M105.524 320L32.0484 246.524" stroke-width="64" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </button>
+        <button class="action pass" title="Pass your turn.">
+          <svg fill="none" xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256">
+            <circle stroke-width="32" cx="128" cy="128" r="112" fill="none" />
+            <line stroke-width="32" x1="48" y1="48" x2="208" y2="208" />
+          </svg>
+        </button>
+      </div>
+    </section>
   </main>
 </body>
 
