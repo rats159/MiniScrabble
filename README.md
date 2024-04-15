@@ -5,10 +5,11 @@ A simple, miniature version of scrabble. The board is 9x9, and the bag includes 
 ## Technolgy
 ### Frontend:
 - Pure HTML, CSS, and JS
+- Websockets with Socket.IO
 
 ### Backend:
 - Runtime: Node.js
-- Server: Express.js with ws WebSockets
+- Server: Express.js with Socket.IO
 - Language: Typescript via tsx
 
 ## Why?
