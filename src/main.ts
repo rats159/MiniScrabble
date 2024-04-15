@@ -24,33 +24,37 @@ wss.on("connection", (socket) => {
    socket.on("message", (data) => {
       const message = JSON.parse(data.toString()) as GameMessage;
       switch (message.type) {
-         case "draw": {
-            try {
-               const gameID = paramToUUID(message.gameid);
-               const game = Games.get(gameID);
+         case "draw":
+            {
+               try {
+                  const gameID = paramToUUID(message.gameid);
+                  const game = Games.get(gameID);
 
-               if (game.bagSize() == 0) {
-                  socket.send(JSON.stringify({ type: "error", data: "Bag is empty." }));
-                  return;
+                  if (game.bagSize() == 0) {
+                     socket.send(JSON.stringify({ type: "error", data: "Bag is empty." }));
+                     return;
+                  }
+
+                  //user tried to draw more tiles than in bag
+                  const overdraw = game.bagSize() < message.amount;
+                  const count = overdraw ? game.bagSize() : message.amount;
+
+                  const tiles = game.drawMany(count);
+
+                  socket.send(
+                     JSON.stringify({
+                        type: "bagdraw",
+                        data: { count, tiles, remaining: game.bagSize(), overdraw },
+                     })
+                  );
+               } catch (error) {
+                  socket.send(JSON.stringify({ type: "error", data: error!.message }));
                }
-
-               //user tried to draw more tiles than in bag
-               const overdraw = game.bagSize() < message.amount;
-               const count = overdraw ? game.bagSize() : message.amount;
-
-               const tiles = game.drawMany(count);
-
-               socket.send(
-                  JSON.stringify({
-                     type: "bagdraw",
-                     data: { count, tiles, remaining: game.bagSize(), overdraw },
-                  })
-               );
-            } catch (error) {
-               socket.send(JSON.stringify({ type: "error", data: error!.message }));
             }
-         }
+            break;
+
          case "end":
+            break;
       }
    });
 });
