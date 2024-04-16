@@ -8,8 +8,13 @@ const server = http.createServer(app);
 
 const io = new socketio.Server(server);
 
+type DrawTileMessage = {
+   amount: number;
+   gameid: string;
+};
+
 io.on("connection", (socket) => {
-   socket.on("draw", (message) => {
+   socket.on("draw", (message: DrawTileMessage) => {
       console.log(message);
       try {
          const gameID = paramToUUID(message.gameid);
