@@ -15,6 +15,10 @@ function setupTile(tile) {
    tile.onpointerdown = (event) => {
       event.preventDefault();
 
+      if (tile.classList.contains("played")) {
+         sendPickupTile(tile.dataset["x"], tile.dataset["y"]);
+      }
+
       //Pick up tile
       tile.classList.add("dragging");
       tile.classList.remove("played");
@@ -102,12 +106,21 @@ function playOnBoard(tile, tileBounds, boardBounds) {
          tile.classList.remove("invalid");
       }, 2000);
    } else {
-      tile.style.gridRow = rowIndex + 1;
-      tile.style.gridColumn = colIndex + 1;
-      tileBoard.appendChild(tile);
-      tile.classList.add("played");
+      placeTile(tile, colIndex, rowIndex);
       sendTilePlaced(tile.dataset["letter"], colIndex, rowIndex);
    }
+}
+
+/**
+ * @param {HTMLDivElement} tile
+ */
+function placeTile(tile, x, y) {
+   tile.style.gridColumn = x + 1;
+   tile.style.gridRow = y + 1;
+   tile.setAttribute("data-x", x);
+   tile.setAttribute("data-y", y);
+   tileBoard.appendChild(tile);
+   tile.classList.add("played");
 }
 
 function reorderRack(tile, tileBounds) {

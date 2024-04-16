@@ -15,7 +15,15 @@ socket.on("draw", ({ tiles }) => {
 });
 
 socket.on("placetile", ({ letter, score, x, y }) => {
-   console.log(`${letter} placed at ${x} ${y}`);
+   placeTile(makeTileHTML(letter, score), x, y);
+});
+
+socket.on("pickuptile", ({ x, y }) => {
+   for (const tile of tileBoard.children) {
+      if (tile.dataset["x"] == x && tile.dataset["y"] == y) {
+         tile.remove();
+      }
+   }
 });
 
 async function validateWord(word) {
@@ -38,6 +46,10 @@ function drawTile() {
 
 function sendTilePlaced(letter, x, y) {
    socket.emit("placetile", { letter, x, y, gameId });
+}
+
+function sendPickupTile(x, y) {
+   socket.emit("pickuptile", { x, y, gameId });
 }
 
 function makeTileHTML(letter, score) {

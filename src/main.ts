@@ -21,6 +21,12 @@ type PlaceTileMessage = {
    gameId: string;
 };
 
+type PickupTileMessage = {
+   x: number;
+   y: number;
+   gameId: string;
+};
+
 io.on("connection", (socket) => {
    socket.on("draw", (message: DrawTileMessage) => {
       console.log(message);
@@ -46,12 +52,18 @@ io.on("connection", (socket) => {
    });
 
    socket.on("placetile", (data: PlaceTileMessage) => {
-      console.log(data);
       socket.broadcast.emit("placetile", {
          x: data.x,
          y: data.y,
          letter: data.letter,
          score: Tile.get(data.letter).score,
+      });
+   });
+
+   socket.on("pickuptile", (data: PickupTileMessage) => {
+      socket.broadcast.emit("pickuptile", {
+         x: data.x,
+         y: data.y,
       });
    });
 });
