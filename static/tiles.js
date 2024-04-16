@@ -106,6 +106,7 @@ function playOnBoard(tile, tileBounds, boardBounds) {
       tile.style.gridColumn = colIndex + 1;
       tileBoard.appendChild(tile);
       tile.classList.add("played");
+      sendTilePlaced(tile.dataset["letter"], colIndex, rowIndex);
    }
 }
 

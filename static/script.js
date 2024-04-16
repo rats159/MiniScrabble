@@ -5,7 +5,6 @@ const rack = document.querySelector(".rack");
 const tileBoard = document.querySelector("#playedtiles");
 
 let gameId = "";
-// let socket = new WebSocket("ws://localhost:8080");
 
 const socket = io();
 
@@ -13,6 +12,10 @@ socket.on("draw", ({ tiles }) => {
    for (const tile of tiles) {
       rack.appendChild(makeTileHTML(tile.letter, tile.score));
    }
+});
+
+socket.on("placetile", ({ letter, score, x, y }) => {
+   console.log(`${letter} placed at ${x} ${y}`);
 });
 
 async function validateWord(word) {
@@ -31,6 +34,10 @@ async function createNewGame() {
 
 function drawTile() {
    socket.emit("draw", { gameid: gameId, amount: 1 });
+}
+
+function sendTilePlaced(letter, x, y) {
+   socket.emit("placetile", { letter, x, y, gameId });
 }
 
 function makeTileHTML(letter, score) {

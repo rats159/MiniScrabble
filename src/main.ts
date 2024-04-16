@@ -3,6 +3,7 @@ import Game from "./Game.ts";
 import { UUID } from "crypto";
 import * as socketio from "socket.io";
 import * as http from "http";
+import { Tile } from "./Tile.ts";
 const app = express();
 const server = http.createServer(app);
 
@@ -11,6 +12,13 @@ const io = new socketio.Server(server);
 type DrawTileMessage = {
    amount: number;
    gameid: string;
+};
+
+type PlaceTileMessage = {
+   letter: string;
+   x: number;
+   y: number;
+   gameId: string;
 };
 
 io.on("connection", (socket) => {
@@ -35,6 +43,16 @@ io.on("connection", (socket) => {
       } catch (error) {
          socket.emit("error", error!.message);
       }
+   });
+
+   socket.on("placetile", (data: PlaceTileMessage) => {
+      console.log(data);
+      socket.broadcast.emit("placetile", {
+         x: data.x,
+         y: data.y,
+         letter: data.letter,
+         score: Tile.get(data.letter).score,
+      });
    });
 });
 
