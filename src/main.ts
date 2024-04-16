@@ -8,18 +8,6 @@ const server = http.createServer(app);
 
 const io = new socketio.Server(server);
 
-type GameMessage = (
-   | {
-        type: "draw";
-        amount: number;
-     }
-   | {
-        type: "end";
-     }
-) & {
-   gameid: string;
-};
-
 io.on("connection", (socket) => {
    socket.on("draw", (message) => {
       console.log(message);
