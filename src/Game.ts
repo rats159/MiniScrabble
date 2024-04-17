@@ -8,7 +8,7 @@ export default class Game {
    //Adapted from https://github.com/dwyl/english-words/blob/master/words_alpha.txt
    public static readonly words: string[] = readFileSync("words_alpha.txt", {
       encoding: "utf8",
-   }).split("\n");
+   }).split(/\r?\n/);
 
    public constructor() {
       this.id = randomUUID();
@@ -30,6 +30,7 @@ export default class Game {
    }
 
    static isValidWord(word: string): boolean {
+      console.log(Game.words);
       //Binary search
       let left = 0;
       let right = Game.words.length - 1;
