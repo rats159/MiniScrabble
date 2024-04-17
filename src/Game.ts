@@ -30,7 +30,6 @@ export default class Game {
    }
 
    static isValidWord(word: string): boolean {
-      console.log(Game.words);
       //Binary search
       let left = 0;
       let right = Game.words.length - 1;
