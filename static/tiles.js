@@ -227,10 +227,10 @@ function contiguousCount(board, visited, [x, y]) {
    if (board[x][y] != "-") {
       return (
          1 +
-         fill(board, visited, [x + 1, y]) +
-         fill(board, visited, [x - 1, y]) +
-         fill(board, visited, [x, y + 1]) +
-         fill(board, visited, [x, y - 1])
+         contiguousCount(board, visited, [x + 1, y]) +
+         contiguousCount(board, visited, [x - 1, y]) +
+         contiguousCount(board, visited, [x, y + 1]) +
+         contiguousCount(board, visited, [x, y - 1])
       );
    } else {
       return 0;
@@ -241,15 +241,35 @@ function getWordsFrom(x, y) {
    const words = boardToTileArray();
 
    let verticalWord = [];
-   let horizontalWord = "";
+   let horizontalWord = [];
 
-   for (let up = y; up >= 0; up--) {
+   for (let up = +y; up >= 0; up--) {
+      if (words[x][up] == "-") {
+         break;
+      }
       verticalWord.unshift(words[x][up]);
    }
 
-   for (let down = y + 1; down < words[x].length; down++) {
+   for (let down = +y + 1; down < words[x].length; down++) {
+      if (words[x][down] == "-") {
+         break;
+      }
       verticalWord.push(words[x][down]);
    }
 
-   return verticalWord;
+   for (let left = +x; left >= 0; left--) {
+      if (words[left][y] == "-") {
+         break;
+      }
+      horizontalWord.unshift(words[left][y]);
+   }
+
+   for (let right = +x + 1; right < words[x].length; right++) {
+      if (words[right][y] == "-") {
+         break;
+      }
+      horizontalWord.push(words[right][y]);
+   }
+
+   return [verticalWord.join(""), horizontalWord.join("")];
 }
