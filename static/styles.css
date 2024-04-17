@@ -58,6 +58,7 @@ body {
 .tile {
    top: 0px;
    left: 0px;
+   cursor: grab;
    &::before {
       content: attr(data-letter);
       font-size: 1.5rem;
@@ -77,6 +78,7 @@ body {
    &.dragging {
       position: absolute;
       animation: dragging 2s infinite ease-in-out;
+      cursor: grabbing;
    }
 
    &.played {

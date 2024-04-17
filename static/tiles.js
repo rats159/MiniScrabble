@@ -16,6 +16,11 @@ function setupTile(tile) {
       event.preventDefault();
 
       if (tile.classList.contains("played")) {
+         for (let i = 0; i < turnTiles.length; i++) {
+            if (tile.dataset["x"] == turnTiles[i].dataset["x"] && tile.dataset["x"] == turnTiles[i].dataset["x"]) {
+               turnTiles.splice(i, 1);
+            }
+         }
          sendPickupTile(tile.dataset["x"], tile.dataset["y"]);
       }
 
@@ -106,6 +111,7 @@ function playOnBoard(tile, tileBounds, boardBounds) {
          tile.classList.remove("invalid");
       }, 2000);
    } else {
+      turnTiles.push(tile);
       placeTile(tile, colIndex, rowIndex);
       sendTilePlaced(tile.dataset["letter"], colIndex, rowIndex);
    }
@@ -197,36 +203,53 @@ async function validateBoard() {
    const words = await batchValidateWords(horizontalWords.concat(verticalWords));
 
    //Flood Fill to check for contiguousness
-   const contiguousCount = (function fill(board, visited, [x, y]) {
-      if (x < 0 || x >= board.length || y < 0 || y >= board[0].length) {
-         return 0;
-      }
-
-      for (const [pX, pY] of visited) {
-         if (x == pX && y == pY) {
-            return 0;
-         }
-      }
-      visited.push([x, y]);
-
-      if (board[x][y] != "-") {
-         return (
-            1 +
-            fill(board, visited, [x + 1, y]) +
-            fill(board, visited, [x - 1, y]) +
-            fill(board, visited, [x, y + 1]) +
-            fill(board, visited, [x, y - 1])
-         );
-      } else {
-         return 0;
-      }
-   })(board, [], [firstX, firstY]);
-
-   let contiguous = false;
-
-   if (contiguousCount == board.flat().filter((c) => c != "-").length) {
-      contiguous = true;
-   }
+   const contiguous = isContiguous(board, [], [firstX, firstY]);
 
    return { contiguous, words };
+}
+
+function isContiguous(board, visited, [x, y]) {
+   return contiguousCount(board, visited, [x, y]) == board.flat().filter((c) => c != "-").length;
+}
+
+function contiguousCount(board, visited, [x, y]) {
+   if (x < 0 || x >= board.length || y < 0 || y >= board[0].length) {
+      return 0;
+   }
+
+   for (const [pX, pY] of visited) {
+      if (x == pX && y == pY) {
+         return 0;
+      }
+   }
+   visited.push([x, y]);
+
+   if (board[x][y] != "-") {
+      return (
+         1 +
+         fill(board, visited, [x + 1, y]) +
+         fill(board, visited, [x - 1, y]) +
+         fill(board, visited, [x, y + 1]) +
+         fill(board, visited, [x, y - 1])
+      );
+   } else {
+      return 0;
+   }
+}
+
+function getWordsFrom(x, y) {
+   const words = boardToTileArray();
+
+   let verticalWord = [];
+   let horizontalWord = "";
+
+   for (let up = y; up >= 0; up--) {
+      verticalWord.unshift(words[x][up]);
+   }
+
+   for (let down = y + 1; down < words[x].length; down++) {
+      verticalWord.push(words[x][down]);
+   }
+
+   return verticalWord;
 }

@@ -8,6 +8,8 @@ let gameId = "";
 
 const socket = io();
 
+const turnTiles = [];
+
 socket.on("draw", ({ tiles }) => {
    for (const tile of tiles) {
       rack.appendChild(makeTileHTML(tile.letter, tile.score));

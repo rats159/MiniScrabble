@@ -37,3 +37,10 @@ sort.addEventListener("click", () => {
       }, 500);
    }
 });
+
+submit.addEventListener("click", () => {
+   for (const tile of turnTiles) {
+      const words = getWordsFrom(tile.dataset["x"], tile.dataset["y"]);
+      console.log(tile);
+   }
+});
