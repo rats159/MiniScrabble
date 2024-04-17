@@ -243,33 +243,46 @@ function getWordsFrom(x, y) {
    let verticalWord = [];
    let horizontalWord = [];
 
-   for (let up = +y; up >= 0; up--) {
+   for (let up = y; up >= 0; up--) {
       if (words[x][up] == "-") {
          break;
       }
-      verticalWord.unshift(words[x][up]);
+      verticalWord.unshift({ x, y: up, letter: words[x][up] });
    }
 
-   for (let down = +y + 1; down < words[x].length; down++) {
+   for (let down = y + 1; down < words[x].length; down++) {
       if (words[x][down] == "-") {
          break;
       }
-      verticalWord.push(words[x][down]);
+      verticalWord.push({ x, y: down, letter: words[x][down] });
    }
 
-   for (let left = +x; left >= 0; left--) {
+   for (let left = x; left >= 0; left--) {
       if (words[left][y] == "-") {
          break;
       }
-      horizontalWord.unshift(words[left][y]);
+
+      horizontalWord.unshift({ x: left, y, letter: words[left][y] });
    }
 
-   for (let right = +x + 1; right < words[x].length; right++) {
+   for (let right = x + 1; right < words[x].length; right++) {
       if (words[right][y] == "-") {
          break;
       }
-      horizontalWord.push(words[right][y]);
+      horizontalWord.push({ x: right, y, letter: words[right][y] });
    }
 
-   return [verticalWord.join(""), horizontalWord.join("")];
+   const wordsObject = {
+      vertical: {
+         x: verticalWord.map((tile) => tile.x),
+         y: verticalWord.map((tile) => tile.y),
+         word: verticalWord.map((tile) => tile.letter).join(""),
+      },
+      horizontal: {
+         x: horizontalWord.map((tile) => tile.x),
+         y: horizontalWord.map((tile) => tile.y),
+         word: horizontalWord.map((tile) => tile.letter).join(""),
+      },
+   };
+   return wordsObject;
 }

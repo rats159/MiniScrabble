@@ -39,8 +39,28 @@ sort.addEventListener("click", () => {
 });
 
 submit.addEventListener("click", () => {
+   let tileObjs = [];
    for (const tile of turnTiles) {
-      const words = getWordsFrom(tile.dataset["x"], tile.dataset["y"]);
-      console.log(tile);
+      tileObjs.push(getWordsFrom(+tile.dataset["x"], +tile.dataset["y"]));
    }
+
+   const allWords = [];
+   tileObjs.forEach((tileObj) => {
+      if (tileObj.horizontal.word.length > 1) {
+         allWords.push(tileObj.horizontal);
+      }
+      if (tileObj.vertical.word.length > 1) {
+         allWords.push(tileObj.vertical);
+      }
+   });
+
+   //Turn positions into strings to use them as map keys to remove duplicates
+
+   const deDuplicated = new Map();
+   for (const word of allWords) {
+      deDuplicated.set(word.x.join("") + word.y.join(""), word.word);
+   }
+
+   const deDuplicatedWords = [...deDuplicated.values()];
+   console.log(deDuplicatedWords);
 });
