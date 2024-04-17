@@ -73,7 +73,7 @@ body {
       font-family: monospace;
       font-size: 1.25rem;
    }
-   background: hsl(56, 100%, 39%);
+   background: hsl(41, 100%, 45%);
 
    &.dragging {
       position: absolute;
