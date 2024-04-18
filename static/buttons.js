@@ -44,23 +44,21 @@ submit.addEventListener("click", () => {
       tileObjs.push(getWordsFrom(+tile.dataset["x"], +tile.dataset["y"]));
    }
 
-   const allWords = [];
+   const allObjs = [];
    tileObjs.forEach((tileObj) => {
       if (tileObj.horizontal.word.length > 1) {
-         allWords.push(tileObj.horizontal);
+         allObjs.push(tileObj.horizontal);
       }
       if (tileObj.vertical.word.length > 1) {
-         allWords.push(tileObj.vertical);
+         allObjs.push(tileObj.vertical);
       }
    });
 
-   //Turn positions into strings to use them as map keys to remove duplicates
-
    const deDuplicated = new Map();
-   for (const word of allWords) {
+   for (const word of allObjs) {
       deDuplicated.set(word.x.join("") + word.y.join(""), word.word);
    }
 
-   const deDuplicatedWords = [...deDuplicated.values()];
-   console.log(deDuplicatedWords);
+   const allWords = [...deDuplicated.values()];
+   console.log(allWords);
 });
