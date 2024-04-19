@@ -59,6 +59,7 @@ body {
    top: 0px;
    left: 0px;
    cursor: grab;
+   transition: background-color 600ms;
    &::before {
       content: attr(data-letter);
       font-size: 1.5rem;
@@ -85,8 +86,43 @@ body {
       animation: shrink 100ms forwards ease-out;
    }
 
+   &.permanant {
+      animation: lock 200ms forwards ease-in-out;
+      cursor: not-allowed;
+      transform-origin: center center;
+      background-color: hsl(41, 100%, 75%);
+   }
+
    &.invalid {
       animation: invalid-tile 1s forwards linear;
+   }
+}
+
+@keyframes invalid {
+   0%,
+   50%,
+   100% {
+      rotate: 0deg;
+   }
+
+   25% {
+      rotate: -15deg;
+   }
+
+   75% {
+      rotate: 15deg;
+   }
+}
+
+@keyframes lock {
+   from {
+      scale: 0.9;
+   }
+   50% {
+      scale: 1.5;
+   }
+   to {
+      scale: 1;
    }
 }
 

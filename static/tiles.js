@@ -131,7 +131,7 @@ function placeTile(tile, x, y) {
 
 function reorderRack(tile, tileBounds) {
    let placed = false;
-   for (const rackTile of document.querySelectorAll(".tile:not(.dragging):not(.played)")) {
+   for (const rackTile of rack.querySelectorAll(".tile")) {
       if (rackTile.getBoundingClientRect().left > tileBounds.left) {
          rackTile.insertAdjacentElement("beforebegin", tile);
          placed = true;
@@ -285,4 +285,46 @@ function getWordsFrom(x, y) {
       },
    };
    return wordsObject;
+}
+
+function getAllWordsFromTiles(tiles) {
+   let tileObjs = [];
+   for (const tile of tiles) {
+      tileObjs.push(getWordsFrom(+tile.dataset["x"], +tile.dataset["y"]));
+   }
+   const allObjs = [];
+   tileObjs.forEach((tileObj) => {
+      if (tileObj.horizontal.word.length > 1) {
+         allObjs.push(tileObj.horizontal);
+      }
+      if (tileObj.vertical.word.length > 1) {
+         allObjs.push(tileObj.vertical);
+      }
+   });
+   const deDuplicated = new Map();
+   for (const word of allObjs) {
+      deDuplicated.set(word.x.join("") + "," + word.y.join(""), word.word);
+   }
+   return deDuplicated;
+}
+
+function removeTile({ x, y }) {
+   for (const child of tileBoard.children) {
+      if (child.dataset["x"] == x && child.dataset["y"] == y) {
+         child.remove();
+         return;
+      }
+   }
+}
+
+function addPermanantTile({ letter, score, x, y }) {
+   const tile = document.createElement("div");
+   tile.setAttribute("data-letter", letter);
+   tile.setAttribute("data-score", score);
+   tile.setAttribute("data-x", x);
+   tile.setAttribute("data-y", y);
+   tile.classList.add("permanant");
+   tile.classList.add("tile");
+   tile.style.gridArea = `${y + 1} / ${x + 1}`;
+   tileBoard.appendChild(tile);
 }

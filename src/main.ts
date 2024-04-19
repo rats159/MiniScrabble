@@ -4,6 +4,7 @@ import { UUID } from "crypto";
 import * as socketio from "socket.io";
 import * as http from "http";
 import { Tile } from "./Tile.ts";
+
 const app = express();
 const server = http.createServer(app);
 
@@ -24,6 +25,15 @@ type PlaceTileMessage = {
 type PickupTileMessage = {
    x: number;
    y: number;
+   gameId: string;
+};
+
+type SubmitTurnMessage = {
+   tiles: {
+      letter: string;
+      x: number;
+      y: number;
+   }[];
    gameId: string;
 };
 
@@ -64,6 +74,18 @@ io.on("connection", (socket) => {
       socket.broadcast.emit("pickuptile", {
          x: data.x,
          y: data.y,
+      });
+   });
+
+   socket.on("submitturn", (data: SubmitTurnMessage) => {
+      const withScores = data.tiles.map((object) => ({
+         x: object.x,
+         y: object.y,
+         letter: object.letter,
+         score: Tile.get(object.letter).score,
+      }));
+      io.emit("turnsubmitted", {
+         tiles: withScores,
       });
    });
 });

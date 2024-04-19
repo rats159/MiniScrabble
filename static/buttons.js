@@ -38,27 +38,24 @@ sort.addEventListener("click", () => {
    }
 });
 
-submit.addEventListener("click", () => {
-   let tileObjs = [];
-   for (const tile of turnTiles) {
-      tileObjs.push(getWordsFrom(+tile.dataset["x"], +tile.dataset["y"]));
+submit.addEventListener("click", async () => {
+   const allWords = getAllWordsFromTiles(turnTiles);
+
+   const validated = await batchValidateWords([...allWords.values()]);
+   for (const entry of validated) {
+      if (!entry.valid) {
+         console.log(`${entry.word} is not a word!`);
+         return;
+      }
    }
 
-   const allObjs = [];
-   tileObjs.forEach((tileObj) => {
-      if (tileObj.horizontal.word.length > 1) {
-         allObjs.push(tileObj.horizontal);
-      }
-      if (tileObj.vertical.word.length > 1) {
-         allObjs.push(tileObj.vertical);
-      }
-   });
+   const tiles = [...turnTiles].map((tile) => ({
+      letter: tile.dataset["letter"],
+      x: +tile.dataset["x"],
+      y: +tile.dataset["y"],
+   }));
 
-   const deDuplicated = new Map();
-   for (const word of allObjs) {
-      deDuplicated.set(word.x.join("") + word.y.join(""), word.word);
-   }
-
-   const allWords = [...deDuplicated.values()];
-   console.log(allWords);
+   sendSubmitTurn(tiles);
+   turnTiles = [];
+   refillRack();
 });

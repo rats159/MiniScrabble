@@ -8,7 +8,7 @@ let gameId = "";
 
 const socket = io();
 
-const turnTiles = [];
+let turnTiles = [];
 
 socket.on("draw", ({ tiles }) => {
    for (const tile of tiles) {
@@ -26,6 +26,13 @@ socket.on("pickuptile", ({ x, y }) => {
          tile.remove();
       }
    }
+});
+
+socket.on("turnsubmitted", ({ tiles }) => {
+   tiles.forEach((tile) => {
+      removeTile(tile);
+      addPermanantTile(tile);
+   });
 });
 
 async function validateWord(word) {
@@ -54,6 +61,10 @@ function sendPickupTile(x, y) {
    socket.emit("pickuptile", { x, y, gameId });
 }
 
+function sendSubmitTurn(tiles) {
+   socket.emit("submitturn", { tiles, gameId });
+}
+
 function makeTileHTML(letter, score) {
    const tile = document.createElement("div");
    tile.setAttribute("data-letter", letter);
@@ -61,4 +72,9 @@ function makeTileHTML(letter, score) {
    tile.classList.add("tile");
    setupTile(tile);
    return tile;
+}
+
+function refillRack() {
+   const numToDraw = 5 - rack.childElementCount;
+   socket.emit("draw", { gameid: gameId, amount: numToDraw });
 }
