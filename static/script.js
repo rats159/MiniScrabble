@@ -17,7 +17,12 @@ socket.on("draw", ({ tiles }) => {
 });
 
 socket.on("placetile", ({ letter, score, x, y }) => {
-   placeTile(makeTileHTML(letter, score), x, y);
+   const tile = document.createElement("div");
+   tile.setAttribute("data-letter", "?");
+   tile.setAttribute("data-score", "");
+   tile.classList.add("tile");
+   tile.classList.add("foreign");
+   placeTile(tile, x, y);
 });
 
 socket.on("pickuptile", ({ x, y }) => {

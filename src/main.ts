@@ -65,8 +65,6 @@ io.on("connection", (socket) => {
       socket.broadcast.emit("placetile", {
          x: data.x,
          y: data.y,
-         letter: data.letter,
-         score: Tile.get(data.letter).score,
       });
    });
 
