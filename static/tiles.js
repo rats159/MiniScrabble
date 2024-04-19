@@ -17,7 +17,7 @@ function setupTile(tile) {
 
       if (tile.classList.contains("played")) {
          for (let i = 0; i < turnTiles.length; i++) {
-            if (tile.dataset["x"] == turnTiles[i].dataset["x"] && tile.dataset["x"] == turnTiles[i].dataset["x"]) {
+            if (tile.dataset["x"] == turnTiles[i].dataset["x"] && tile.dataset["y"] == turnTiles[i].dataset["y"]) {
                turnTiles.splice(i, 1);
             }
          }
